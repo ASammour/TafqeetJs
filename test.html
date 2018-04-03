@@ -1,0 +1,34 @@
+<!--
+    هذا الكود منشور تحت رخضة المشاع الإبداعي الإصدار 3.0
+    ويمكنك نشر، أو نسخ، أو إعادة توزيع الكود حتى للأغراض التجارية
+    Author: ASammour
+    E-mail: amsammour[at]gmail[dot]com
+-->
+<html>
+    <head>
+
+        <style>
+            h1,h3{
+                font-family: Traditional Arabic;
+            }
+        </style>
+
+        <script src="Tafqeet.js"></script>
+
+        <script>
+            function main (){
+                document.getElementById ("demo").innerHTML =  tafqeet (document.getElementById("txt").value);
+            }
+        </script>   
+
+    </head>
+    <body>
+
+        <h1>أهلًا</h1>
+        <h1>اضغط على الرقم في الأسفل لتحويله لأرقام</h1>
+        
+        <input type = "number" id = "txt" max = "99999999999999"/>
+        <input type = "button" id = "submit" onclick="main()" value = "تفقيط"/>
+        <h3 id="demo"></h3>
+    </body>
+</html>
