@@ -6,9 +6,19 @@
 */
 
 
+/**
+ * 
+ * 
+ * فيما يلي تعريف لبعض المصفوفات
+ * التي تحتوي على تفسير الأرقام حسب المنازل العشرية
+ * 
+ * 
+ */
+
 
 /*
 القيم الخاصة بقيم الآحاد
+وحتى الرقم 12
 * */
 var ones = {
     0: "صفر",
@@ -74,7 +84,8 @@ var thousands = {
 var millions = {
     1: "مليون",
     2: "مليونان",
-    39: "ملايين"
+    39: "ملايين",
+    1199: "مليونًا"
 }
 
 
@@ -84,7 +95,8 @@ var millions = {
 var billions = {
     1: "مليار",
     2: "ملياران",
-    39: "مليارات"
+    39: "مليارات",
+    1199: "مليارًا"
 }
 
 /*
@@ -93,7 +105,8 @@ var billions = {
 var trillions = {
     1: "تريليون",
     2: "تريليونان",
-    39: "تريليونات"
+    39: "تريليونات",
+    1199: "تريليونًا"
 }
 
 
@@ -104,9 +117,14 @@ var trillions = {
  * والتي يتم من خلالها تفقيط الأرقام
  */
 function tafqeet(number) {
+    
+    /**
+     * متغير لتخزين النص المفقط بداخله
+     */
+
     var value = "";
 
-    //التحقق من أن المتغير يحتوي أرقامًا فقط، وأقل من تسعمائة تريليون
+    //التحقق من أن المتغير يحتوي أرقامًا فقط، وأقل من تسعة وتسعين تريليون
     if (number.toString ().match(/^[0-9]+$/) != null && number.toString().length <= 14) {
         switch (number.toString().length) {
             /**
@@ -155,8 +173,8 @@ function tafqeet(number) {
                 break;
 
             /**
-             * إذا كان العدد من 100000000000 إلى 99999999999999
-             * أي يشمل التريليونات وعشرات التريليونات ومئات التريليونات
+             * إذا كان العدد من 100000000000 إلى 9999999999999
+             * أي يشمل التريليونات وعشرات التريليونات
              */
             case 13:
             case 14:
@@ -170,8 +188,16 @@ function tafqeet(number) {
 
     /**
      * هذا السطر يقوم فقط بإزالة بعض الزوائد من النص الأخير
+     * تظهر هذه الزوائد نتيجة بعض الفروق في عملية التفقيط
+     * ولإزالتها يتم استخدام هذا السطر
      */
-    return value.replace (/وصفر/g,"").replace (/وundefined/g,"").replace(/ +(?= )/g,'').replace (/صفر/g,"");
+    return value.replace (/وصفر/g,"")
+    .replace (/وundefined/g,"")
+    .replace(/ +(?= )/g,'')
+    .replace (/صفر و/g,"")
+    .replace (/صفر/g,"")
+    .replace (/مئتان أ/,"مائتا أ")
+    .replace (/مئتان م/,"مائتا م");
 }
 
 
@@ -267,12 +293,19 @@ function oneTen(number) {
 function hundred(number) {
     var value = "";
     
-
+    /**
+     * إذا كان الرقم لا يحتوي على ثلاث منازل
+     * سيتم إضافة أصفار إلى يسار الرقم
+     */
     while (number.toString().length !=3){
         number = "0"+number;
     }
 
     var first = getNth (number, 0,0);
+
+    /**
+     * تحديد قيمة الرقم الأول
+     */
     switch (parseInt(first)) {
         case 0:
             value = hundreds["0"];
@@ -305,6 +338,11 @@ function hundred(number) {
             value = hundreds["9"];
             break;
     }
+
+    /**
+     * إضافة منزلة العشرات إلى الرقم المفقط
+     * باستخدام دالة العشرات السابقة
+     */
     value = value + " و"+oneTen (parseInt (getNth (number,1,2)));
     return value;
 }
@@ -315,53 +353,8 @@ function hundred(number) {
  * الدالة الخاصة بالآلاف
  */
 function thousand(number) {
-    var value = "";
-
-    number = parseInt (number);
-
-    //إذا كان من 100 إلى 2999
-    if (number>= 1000 & number <= 2999){
-        if (getNth (number, 0,0) == "1"){
-            value = thousands["1"]  + " و"+hundred (parseInt (getNth (number, 1,3)));
-        }
-        else if (getNth (number, 0,0) == "2"){
-            value = thousands["2"] + " و"+hundred (parseInt (getNth (number, 1,3)));
-        }
-    }
-
-
-    /**
-     * من 3000 إلى 9999
-     */
-    else if (number>= 3000 & number <= 9999){
-        value = oneTen (parseInt (getNth (number, 0,0))) +" "+ thousands["39"] + " و"+hundred (parseInt (getNth (number, 1,3)));
-    }
-
-    /**
-     * من 10000 حتى 10999
-     */
-    else if ( number>= 10000 && number<= 10999){
-        value = oneTen (parseInt (getNth (number, 0,1))) +" "+ thousands["39"] + " و"+hundred (parseInt (getNth (number, 1,4)));
-    }
-
-    /**
-     * من 99999 حتى 11000
-     */
-    else if ( number>= 11000 && number<= 99999){
-        value = oneTen (parseInt (getNth (number, 0,1))) +" "+ thousands["1199"] + " و"+hundred (parseInt (getNth (number, 2,4)));
-    }
-
-    /**
-     * من 100000 حتى 999999
-     */
-    else if ( number>= 100000 && number<= 999999){
-        value = hundred (parseInt (getNth (number, 0,2))) +" "+ thousands["1"] + " و"+hundred (parseInt (getNth (number, 3,5)));
-    }
-
-
-    return value;
+    return thousandsTrillions (thousands["1"],thousands["2"], thousands["39"], thousands["1199"], 0, parseInt (number), hundred (getNthReverse (number, 4)));
 }
-
 
 /**
  * 
@@ -369,35 +362,7 @@ function thousand(number) {
  * الدالة الخاصة بالملايين 
  */
 function million(number) {
-    var value = "";
-
-    number = parseInt (number);
-
-    if (number>= 1000000 & number <= 2999999){
-        if (getNth (number, 0,0) == "1"){
-            value = millions["1"]  + " و"+thousand (parseInt (getNth (number, 1,6)));
-        }
-        else if (getNth (number, 0,0) == "2"){
-            value = millions["2"] + " و"+thousand (parseInt (getNth (number, 1,6)));
-        }
-    }
-
-    else if (number>= 3000000 & number <= 9999999){
-        value = oneTen (parseInt (getNth (number, 0,0))) +" "+ millions["39"] + " و"+thousand (parseInt (getNth (number, 1,6)));
-    }
-
-    else if ( number>= 10000000 && number<= 10999999){
-        value = oneTen (parseInt (getNth (number, 0,1))) +" "+ millions["39"] + " و"+thousand (parseInt (getNth (number, 1,7)));
-    }
-
-    else if ( number>= 11000000 && number<= 99999999){
-        value = oneTen (parseInt (getNth (number, 0,1))) +" "+ millions["1"] + " و"+thousand (parseInt (getNth (number, 2,7)));
-    }
-    else if ( number>= 100000000 && number<= 999999999){
-        value = hundred (parseInt (getNth (number, 0,2))) +" "+ millions["1"] + " و"+thousand (parseInt (getNth (number, 3,8)));
-    }
-
-    return value;
+    return thousandsTrillions (millions["1"],millions["2"], millions["39"], millions["1199"], 3, parseInt (number), thousand (getNthReverse (number, 7)));
 }
 
 
@@ -407,36 +372,7 @@ function million(number) {
  * الدالة الخاصة بالمليارات 
  */
 function billion(number) {
-    var value = "";
-
-    number = parseInt (number);
-
-    if (number>= 1000000000 & number <= 2999999999){
-        if (getNth (number, 0,0) == "1"){
-            value = billions["1"]  + " و"+million (parseInt (getNth (number, 1,9)));
-        }
-        else if (getNth (number, 0,0) == "2"){
-            value = billions["2"] + " و"+million (parseInt (getNth (number, 1,9)));
-        }
-    }
-
-    else if (number>= 3000000000 & number <= 9999999999){
-        value = oneTen (parseInt (getNth (number, 0,0))) +" "+ billions["39"] + " و"+million (parseInt (getNth (number, 1,9)));
-    }
-
-    else if ( number>= 10000000000 && number<= 10999999999){
-        value = oneTen (parseInt (getNth (number, 0,1))) +" "+ billions["39"] + " و"+million (parseInt (getNth (number, 1,10)));
-    }
-
-    else if ( number>= 11000000000 && number<= 99999999999){
-        value = oneTen (parseInt (getNth (number, 0,1))) +" "+ billions["1"] + " و"+million (parseInt (getNth (number, 2,11)));
-    }
-    else if ( number>= 100000000000 && number<= 999999999999){
-        value = hundred (parseInt (getNth (number, 0,2))) +" "+ billions["1"] + " و"+million (parseInt (getNth (number, 3,12)));
-    }
-
-    return value;
-
+    return thousandsTrillions (billions["1"],billions["2"], billions["39"], billions["1199"], 6, parseInt (number), million (getNthReverse (number, 10)));
 }
 
 
@@ -446,31 +382,99 @@ function billion(number) {
  * الدالة الخاصة بالترليونات 
  */
 function trillion(number) {
+    return thousandsTrillions (trillions["1"],trillions["2"], trillions["39"], trillions["1199"], 9, parseInt (number), billion (getNthReverse (number, 13)));
+}
+
+
+/**
+ * هذه الدالة هي الأساسية بالنسبة للأرقام
+ * من الآلاف وحتى التريليونات
+ * تقوم هذه الدالة بنفس العملية للمنازل السابقة مع اختلاف
+ * زيادة عدد المنازل في كل مرة
+ * @param {*} one 
+ * @param {*} two 
+ * @param {*} three 
+ * @param {*} eleven 
+ * @param {*} diff 
+ * @param {*} number 
+ * @param {*} other 
+ */
+function thousandsTrillions (one, two, three, eleven, diff, number, other){
     var value = "";
 
     number = parseInt (number);
 
-    if (number>= 1000000000000 & number <= 2999999999999){
-        if (getNth (number, 0,0) == "1"){
-            value = trillions["1"]  + " و"+billion (parseInt (getNth (number, 1,12)));
-        }
-        else if (getNth (number, 0,0) == "2"){
-            value = trillions["2"] + " و"+billion (parseInt (getNth (number, 1,12)));
-        }
+    /**
+     * التحقق من طول الرقم
+     * لاكتشاف إلى أي منزلة ينتمي
+     */
+    switch (number.toString().length){
+        /**
+         * ألوف، أو ملايين، أو مليارات، أو تريليونات
+         */
+        case 4+diff:
+            var ones = parseInt (getNth (number, 0,0));
+            switch (ones){
+                case 1:
+                    value = one  + " و"+ (other);
+                    break;
+                case 2:
+                    value = two + " و"+ (other);
+                    break;
+                default:
+                    value = oneTen (ones) +" "+ three + " و"+ (other);
+                    break;
+            }
+            break;
+
+        /**
+         * عشرات الألوف، أو عشرات الملايين، أو عشرات المليارات، أو عشرات التريليونات
+         */
+        case 5+diff:
+            var tens = parseInt (getNth (number, 0,1));
+            switch (tens){
+                case 10:
+                    value = oneTen (tens) +" "+ three + " و"+ (other);
+                    break;
+                default:
+                    value = oneTen (tens) +" "+ eleven + " و"+ (other);
+                    break;
+            }
+            break;
+        
+        /**
+         *مئات الألوف، أو مئات الملايين، أو مئات المليارات
+         */
+        case 6+diff:
+            var hundreds = parseInt (getNth (number, 0,2));
+            
+            var two = parseInt (getNth (number, 1,2));
+            var th = "";
+            switch (two){
+                case 0:
+                    th = one;
+                    break;
+                
+                default:
+                    th = eleven;
+                    break;    
+            }
+            switch (tens){
+                case 100<=tens<=199:
+                    value = hundred (hundreds) +" "+ th + " و"+ (other);
+                    break;
+                case 200<=tens<=299:
+                    value = hundred (hundreds) +" "+ th + " و"+ (other);
+                    break;
+                default:
+                    value = hundred (hundreds) +" "+ th + " و"+ (other);
+                    break;    
+            }
+            break;
     }
 
-    else if (number>= 3000000000000 & number <= 9999999999999){
-        value = oneTen (parseInt (getNth (number, 0,0))) +" "+ trillions["39"] + " و"+billion (parseInt (getNth (number, 1,12)));
-    }
-
-    else if ( number>= 10000000000000 && number<= 10999999999999){
-        value = oneTen (parseInt (getNth (number, 0,1))) +" "+ trillions["39"] + " و"+billion (parseInt (getNth (number, 1,13)));
-    }
-
-    else if ( number>= 11000000000000 && number<= 99999999999999){
-        value = oneTen (parseInt (getNth (number, 0,1))) +" "+ trillions["1"] + " و"+billion (parseInt (getNth (number, 2,14)));
-    }
     return value;
+
 }
 
 
@@ -482,5 +486,21 @@ function getNth(number, first, end){
     for (var i=first;i<=end;i++){
         finalNumber = finalNumber + String (number).charAt(i);
     }
+    return finalNumber;
+}
+
+/**
+ * دالة تجلب أجزاء من الرقم بالعكس
+ * @param {*} number 
+ * @param {*} limit 
+ */
+function getNthReverse(number, limit){
+    var finalNumber = "";
+    var x = 1;
+    while (x != limit){
+        finalNumber = String (number).charAt(number.toString().length-x) + finalNumber;
+        x++;
+    }
+
     return finalNumber;
 }
