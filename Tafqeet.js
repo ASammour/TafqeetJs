@@ -123,7 +123,7 @@ function tafqeet(number) {
      */
 
     var value = "";
-
+    number = parseInt (number);
     //التحقق من أن المتغير يحتوي أرقامًا فقط، وأقل من تسعة وتسعين تريليون
     if (number.toString ().match(/^[0-9]+$/) != null && number.toString().length <= 14) {
         switch (number.toString().length) {
