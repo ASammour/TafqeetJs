@@ -353,7 +353,7 @@ function hundred(number) {
  * الدالة الخاصة بالآلاف
  */
 function thousand(number) {
-    return thousandsTrillions (thousands["1"],thousands["2"], thousands["39"], thousands["1199"], 0, parseInt (number), hundred (getNthReverse (number, 4)));
+    return thousandsTrillions (thousands["1"],thousands["2"], thousands["39"], thousands["1199"], 0, parseInt (number),  (getNthReverse (number, 4)));
 }
 
 /**
@@ -362,7 +362,7 @@ function thousand(number) {
  * الدالة الخاصة بالملايين 
  */
 function million(number) {
-    return thousandsTrillions (millions["1"],millions["2"], millions["39"], millions["1199"], 3, parseInt (number), thousand (getNthReverse (number, 7)));
+    return thousandsTrillions (millions["1"],millions["2"], millions["39"], millions["1199"], 3, parseInt (number),  (getNthReverse (number, 7)));
 }
 
 
@@ -372,7 +372,7 @@ function million(number) {
  * الدالة الخاصة بالمليارات 
  */
 function billion(number) {
-    return thousandsTrillions (billions["1"],billions["2"], billions["39"], billions["1199"], 6, parseInt (number), million (getNthReverse (number, 10)));
+    return thousandsTrillions (billions["1"],billions["2"], billions["39"], billions["1199"], 6, parseInt (number),  (getNthReverse (number, 10)));
 }
 
 
@@ -382,7 +382,7 @@ function billion(number) {
  * الدالة الخاصة بالترليونات 
  */
 function trillion(number) {
-    return thousandsTrillions (trillions["1"],trillions["2"], trillions["39"], trillions["1199"], 9, parseInt (number), billion (getNthReverse (number, 13)));
+    return thousandsTrillions (trillions["1"],trillions["2"], trillions["39"], trillions["1199"], 9, parseInt (number),  (getNthReverse (number, 13)));
 }
 
 
@@ -400,6 +400,19 @@ function trillion(number) {
  * @param {*} other 
  */
 function thousandsTrillions (one, two, three, eleven, diff, number, other){
+    /**
+     * جلب المنازل المتبقية
+     */
+    other = parseInt (other);
+    other = tafqeet (other);
+    
+    /**
+     * إذا كان المتبقي يساوي صفر
+     */
+    if (other == ""){
+        other = "صفر"
+    }
+
     var value = "";
 
     number = parseInt (number);
