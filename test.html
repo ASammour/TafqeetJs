@@ -17,7 +17,14 @@
 
         <script>
             function main (){
-                document.getElementById ("demo").innerHTML =  tafqeet (document.getElementById("txt").value);
+                var fraction = document.getElementById("txt").value.split(".");
+
+                if (fraction.length == 2){
+                    document.getElementById ("demo").innerHTML =  tafqeet (fraction[0]) + " فاصلة " + tafqeet (fraction[1]);
+                }
+                else if (fraction.length == 1){
+                    document.getElementById ("demo").innerHTML =  tafqeet (fraction[0]);
+                }
             }
         </script>   
 
@@ -27,7 +34,7 @@
         <h1>أهلًا</h1>
         <h1>اضغط على الرقم في الأسفل لتحويله لأرقام</h1>
         
-        <input type = "number" id = "txt" max = "99999999999999"/>
+        <input type = "number" id = "txt" max = "99999999999999" step="any"/>
         <input type = "button" id = "submit" onclick="main()" value = "تفقيط"/>
         <h3 id="demo"></h3>
     </body>
